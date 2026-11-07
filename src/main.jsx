@@ -4,12 +4,77 @@ import { BrowserRouter, Routes, Route, Navigate, Link, useNavigate, useLocation 
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Float, Sparkles, Environment } from '@react-three/drei'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, Check, ChevronDown, CircleHelp, Clock3, Gauge, KeyRound, LogOut, Menu, Plane, ShieldCheck, Sparkles as SparkleIcon, UserRound, X, Zap } from 'lucide-react'
+import { ArrowRight, Check, ChevronDown, CircleHelp, Clock3, Download, Gauge, KeyRound, LogOut, Menu, Plane, ShieldCheck, Sparkles as SparkleIcon, UserRound, X, Zap } from 'lucide-react'
 import './styles.css'
 
 const user = { name: 'Alex Morgan', email: 'alex.morgan@gmail.com', initials: 'AM' }
 
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(error => {
+      console.error('Unable to register the service worker:', error)
+    })
+  })
+}
+
 function Brand({ compact = false }) { return <Link className="brand" to="/prediction"><span className="brand-mark"><Plane size={compact ? 15 : 17} fill="currentColor" /></span><span>Aviator <b>Prediction</b></span></Link> }
+
+function PWAInstall() {
+  const [installPrompt, setInstallPrompt] = useState(null)
+  const [showInstructions, setShowInstructions] = useState(false)
+  const [isIos, setIsIos] = useState(false)
+
+  useEffect(() => {
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone
+    const iosDevice = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    setIsIos(Boolean(iosDevice && !standalone))
+
+    const handleInstallPrompt = event => {
+      event.preventDefault()
+      setInstallPrompt(event)
+    }
+    const handleInstalled = () => {
+      setInstallPrompt(null)
+      setShowInstructions(false)
+    }
+
+    window.addEventListener('beforeinstallprompt', handleInstallPrompt)
+    window.addEventListener('appinstalled', handleInstalled)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleInstallPrompt)
+      window.removeEventListener('appinstalled', handleInstalled)
+    }
+  }, [])
+
+  const install = async () => {
+    if (!installPrompt) {
+      setShowInstructions(true)
+      return
+    }
+
+    try {
+      await installPrompt.prompt()
+      await installPrompt.userChoice
+      setInstallPrompt(null)
+    } catch (error) {
+      console.error('Unable to start the app installation prompt:', error)
+    }
+  }
+
+  if (!installPrompt && !isIos) return null
+
+  return <div className="pwa-install">
+    <button className="pwa-install-button" onClick={install}><Download size={16} /> Install app</button>
+    {showInstructions && <div className="pwa-help-backdrop" onClick={() => setShowInstructions(false)}>
+      <section className="pwa-help-card" role="dialog" aria-modal="true" aria-labelledby="pwa-help-title" onClick={event => event.stopPropagation()}>
+        <button className="pwa-help-close" aria-label="Close install instructions" onClick={() => setShowInstructions(false)}><X size={18} /></button>
+        <div className="eyebrow">INSTALL ON IOS</div>
+        <h2 id="pwa-help-title">Add Aviator to your Home Screen</h2>
+        <p>In Safari, tap the Share button, choose <b>Add to Home Screen</b>, then tap <b>Add</b>.</p>
+      </section>
+    </div>}
+  </div>
+}
 
 function PlaneModel({ small = false }) {
   const group = React.useRef()
@@ -44,5 +109,5 @@ function Prediction() { const [loading, setLoading] = useState(false); const [re
 
 function Account() { return <div className="account-page"><div className="account-heading"><div><div className="eyebrow">PERSONAL SPACE</div><h1>My account</h1><p>Manage your profile and access.</p></div><Link className="outline-button" to="/prediction">Back to prediction <ArrowRight size={16} /></Link></div><div className="account-grid"><section className="account-card profile-card"><div className="section-title"><span className="icon-square"><UserRound size={17} /></span><div><b>Profile</b><small>Your Google account</small></div></div><div className="profile-large"><span className="avatar large">AM</span><div><h3>{user.name}</h3><p>{user.email}</p></div></div><div className="profile-row"><span>Account status</span><b className="active"><i /> Active</b></div></section><section className="account-card subscription-card"><div className="section-title"><span className="icon-square red"><Gauge size={17} /></span><div><b>Subscription</b><small>Your active access</small></div><span className="active-tag">ACTIVE</span></div><div className="plan-name">Monthly Access</div><div className="countdown"><div><strong>24</strong><span>days remaining</span></div><Clock3 size={25} /></div><div className="detail-list"><div><span>Activated on</span><b>01 Nov 2026</b></div><div><span>Expires on</span><b>01 Dec 2026</b></div><div><span>Access key</span><b className="key-mask">••••-••••-7K2M</b></div></div></section></div><button className="logout-link"><LogOut size={16} /> Log out of Aviator</button></div> }
 
-function App() { return <Routes><Route path="/" element={<Welcome />} /><Route path="/activate" element={<Activate />} /><Route path="/prediction" element={<Shell><Prediction /></Shell>} /><Route path="/account" element={<Shell><Account /></Shell>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes> }
+function App() { return <><Routes><Route path="/" element={<Welcome />} /><Route path="/activate" element={<Activate />} /><Route path="/prediction" element={<Shell><Prediction /></Shell>} /><Route path="/account" element={<Shell><Account /></Shell>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes><PWAInstall /></> }
 createRoot(document.getElementById('root')).render(<BrowserRouter><App /></BrowserRouter>)
