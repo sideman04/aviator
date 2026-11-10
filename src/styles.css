@@ -1261,3 +1261,450 @@ a {
         padding: 28px 22px
     }
 }
+
+/* --- UI/UX polish: accessibility, feedback and motion --- */
+:focus-visible {
+    outline: 2px solid #ff5260;
+    outline-offset: 3px;
+    border-radius: 4px
+}
+
+.skip-link {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    transform: translateY(-180%);
+    padding: 10px 14px;
+    border-radius: 5px;
+    background: #fff;
+    color: #111;
+    font-size: 12px;
+    font-weight: 700;
+    transition: transform .18s
+}
+
+.skip-link:focus {
+    transform: translateY(0)
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0
+}
+
+.account-menu {
+    position: relative;
+    display: flex;
+    align-items: center
+}
+
+.avatar-button {
+    min-height: 44px;
+    padding: 0 2px;
+    border-radius: 6px
+}
+
+.profile-menu button {
+    min-height: 42px
+}
+
+.input-wrap:focus-within {
+    border-color: #bd2432;
+    box-shadow: 0 0 0 3px #ff102824
+}
+
+.error-message[role='alert'],
+#activation-feedback .error-message {
+    min-height: 14px
+}
+
+/* Prediction result actions */
+.result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 25px
+}
+
+.result-actions .another {
+    margin-top: 0
+}
+
+.copy-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 108px;
+    min-height: 54px;
+    padding: 0 18px;
+    border: 1px solid #3a3b43;
+    border-radius: 5px;
+    background: #14151a;
+    color: #c7c8cf;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    transition: .2s
+}
+
+.copy-button:hover {
+    border-color: #5a5b64;
+    background: #1b1c22;
+    color: #fff
+}
+
+.copy-button:active {
+    transform: scale(.98)
+}
+
+/* Recent signals */
+.signal-history {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 22px;
+    font: 9px 'DM Mono';
+    letter-spacing: .12em;
+    color: #6f707a
+}
+
+.history-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px
+}
+
+.history-chip {
+    padding: 6px 9px;
+    border: 1px solid #2d2e35;
+    border-radius: 999px;
+    background: #121318;
+    color: #9b9ca5;
+    font: 10px 'DM Mono';
+    letter-spacing: 0
+}
+
+.history-chip:first-of-type {
+    border-color: #5c1e26;
+    background: #1d0f13;
+    color: #ff6b76
+}
+
+/* Subscription progress */
+.plan-progress {
+    height: 5px;
+    margin-top: 12px;
+    border-radius: 999px;
+    background: #26272e;
+    overflow: hidden
+}
+
+.plan-progress span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff1028, #ff5260);
+    box-shadow: 0 0 12px #ff102880
+}
+
+.key-copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid #33343b;
+    border-radius: 4px;
+    background: #1d1e24;
+    color: #9b9ca5;
+    transition: .2s
+}
+
+.key-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px
+}
+
+.key-copy:hover {
+    border-color: #55565f;
+    color: #fff
+}
+
+/* Graceful fallback if WebGL or the scene fails */
+.scene-fallback {
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: #ff2d40;
+    opacity: .75;
+    filter: drop-shadow(0 0 28px #ff102866)
+}
+
+.scene-fallback svg {
+    transform: rotate(-12deg)
+}
+
+/* Dismissible install prompt */
+.pwa-install {
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.pwa-dismiss {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #33343b;
+    border-radius: 50%;
+    background: #191a20cc;
+    color: #a8a9b2;
+    backdrop-filter: blur(6px);
+    transition: .2s
+}
+
+.pwa-dismiss:hover {
+    border-color: #55565f;
+    color: #fff
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important
+    }
+
+    .generate-button:hover,
+    .primary-button:hover,
+    .google-button:hover {
+        transform: none
+    }
+}
+
+@media(max-width:450px) {
+    .result-actions {
+        gap: 8px
+    }
+
+    .copy-button {
+        min-height: 50px
+    }
+
+    .topbar {
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right))
+    }
+}
+
+/* Toast notifications */
+.toast-stack {
+    position: fixed;
+    z-index: 80;
+    left: 50%;
+    bottom: max(24px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: min(420px, calc(100vw - 32px));
+    pointer-events: none
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 11px 11px 13px;
+    border: 1px solid #33343b;
+    border-radius: 8px;
+    background: #15161b;
+    color: #e6e6ea;
+    font-size: 12px;
+    line-height: 1.4;
+    box-shadow: 0 16px 40px #0009;
+    pointer-events: auto
+}
+
+.toast-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%
+}
+
+.toast-success .toast-icon {
+    color: #2ad58e;
+    background: #0d281f
+}
+
+.toast-info .toast-icon {
+    color: #8fb4ff;
+    background: #111a2a
+}
+
+.toast-error .toast-icon {
+    color: #ff5c68;
+    background: #2b0c12
+}
+
+.toast-message {
+    flex: 1
+}
+
+.toast-close {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    background: none;
+    color: #85868e
+}
+
+.toast-close:hover {
+    background: #24252b;
+    color: #fff
+}
+
+/* Time-to-play card */
+.play-window {
+    width: min(340px, 100%);
+    margin: 22px auto 0;
+    padding: 14px 16px;
+    border: 1px solid #42202a;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #1b0e13, #100d11);
+    text-align: left;
+    box-shadow: 0 10px 30px #0006
+}
+
+.play-window.is-open {
+    border-color: #1f5c43;
+    background: linear-gradient(180deg, #0c1c16, #0d1211)
+}
+
+.play-window-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px
+}
+
+.play-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 9px 'DM Mono';
+    letter-spacing: .14em;
+    color: #a56d75
+}
+
+.play-window.is-open .play-label {
+    color: #4fbf92
+}
+
+.play-clock {
+    font: 500 20px 'DM Mono';
+    letter-spacing: -.5px;
+    color: #ff4050
+}
+
+.play-window.is-open .play-clock {
+    color: #2ad58e
+}
+
+.play-track {
+    height: 4px;
+    margin: 10px 0 9px;
+    border-radius: 999px;
+    background: #2a1a1f;
+    overflow: hidden
+}
+
+.play-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff1028, #ff5260);
+    transition: width .25s linear
+}
+
+.play-window.is-open .play-track {
+    background: #17251f
+}
+
+.play-window.is-open .play-track span {
+    background: linear-gradient(90deg, #18c784, #43e6a4)
+}
+
+.play-window .play-note {
+    margin: 0;
+    font-size: 10.5px;
+    color: #9a8f94
+}
+
+.play-window .play-note b {
+    color: #f0f0f3;
+    font-weight: 600
+}
+
+.play-window.is-open .play-note b {
+    color: #2ad58e
+}
+
+.result-actions .generate-button:disabled {
+    background: #241519;
+    border: 1px solid #4a2229;
+    box-shadow: none;
+    color: #c98e95;
+    cursor: default;
+    transform: none
+}
+
+@media(max-width:450px) {
+    .toast-stack {
+        bottom: max(84px, calc(env(safe-area-inset-bottom) + 74px))
+    }
+
+    .result-actions {
+        flex-direction: column;
+        align-items: center
+    }
+
+    .result-actions .another,
+    .result-actions .copy-button {
+        width: min(100%, 300px)
+    }
+
+    .result-actions .copy-button {
+        min-height: 48px
+    }
+
+    .result-view {
+        padding-bottom: 96px
+    }
+}
